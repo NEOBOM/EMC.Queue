@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../EMC.Queue.Abstractions/EMC.Queue.Abstractions.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+     <Compile Include="../../GlobalUsings.cs" Link="GlobalUsings.cs" />
+    <PackageReference Include="Confluent.Kafka" Version="2.16.0" />
+  </ItemGroup>
+</Project>
