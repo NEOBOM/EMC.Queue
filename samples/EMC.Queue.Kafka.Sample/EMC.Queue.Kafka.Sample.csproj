@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/EMC.Queue.Kafka/EMC.Queue.Kafka.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+     <Compile Include="../../GlobalUsings.cs" Link="GlobalUsings.cs" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.15" />
+  </ItemGroup>
+</Project>
