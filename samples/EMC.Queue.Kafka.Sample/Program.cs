@@ -8,7 +8,7 @@ using EMC.Queue.Samples.Producer;
 var builder = Host.CreateApplicationBuilder(args);
 var configuration = builder.Configuration;
 var bootstrapServers = configuration["Kafka:BootstrapServers"] ?? "127.0.0.1:9092";
-var topic = configuration["Kafka:Topic"] ?? "orders";
+var topic = configuration["Kafka:Topics"]?.Split(",") ?? ["orders"];
 var mode = configuration["Mode"] ?? "publish";
 
 if(mode.Equals("publish", StringComparison.OrdinalIgnoreCase))
@@ -43,6 +43,7 @@ else
 
     builder.Services
         .AddKafkaConsumerOptions(consumerOptions)
-        .AddConsumerHandler<OrderConsumerHandler>(topic);
+        .AddConsumerHandler<OrderConsumerHandler>(topic[0])
+        .AddConsumerHandler<PaymentConsumerHandler>(topic[1]);
 }
 await builder.Build().RunAsync();
