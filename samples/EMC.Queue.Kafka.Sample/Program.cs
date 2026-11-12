@@ -22,7 +22,7 @@ if(mode.Equals("publish", StringComparison.OrdinalIgnoreCase))
             EnableIdempotence = true,
             Acks = Acks.All
         }
-    };
+};
 
     builder.Services.AddKafkaQueueProducer(producerOptions);
     builder.Services.AddHostedService<SampleWorker>();
