@@ -27,15 +27,15 @@ The test suite does not require Kafka to be running.
 
 ## Run the sample
 
-The sample connects to an existing Kafka broker. The default address is `127.0.0.1:9092`; create the `orders` topic on the broker first.
+The sample connects to an existing Kafka broker. The default address is `127.0.0.1:9092`; create the `orders` and `payments` topics on the broker first.
 
-Publish one message:
+Publish the sample messages:
 
 ```sh
 dotnet run --project samples/EMC.Queue.Kafka.Sample -- --Mode=publish
 ```
 
-The publisher sends one message with key `001` and UTF-8 payload `001|99.50|BRL`, then exits. The sample publisher currently uses the fixed topic `orders`.
+The publisher sends two messages with key `001`, then exits: an order to the fixed `orders` topic with UTF-8 payload `001|99.50|BRL`, and a payment to the fixed `payments` topic with UTF-8 payload `1|99.50|2026-11-10 09:10:50`.
 
 Run the consumer in another terminal:
 
@@ -43,23 +43,22 @@ Run the consumer in another terminal:
 dotnet run --project samples/EMC.Queue.Kafka.Sample -- --Mode=consume
 ```
 
-The consumer uses the handler registered for `orders` and runs until Ctrl+C. The sample handler prints the key and payload, then marks the message for acknowledgement.
+The consumer registers `OrderConsumerHandler` for the first configured topic and `PaymentConsumerHandler` for the second, then runs until Ctrl+C. The handlers print each message and mark it for acknowledgement. Set `Kafka:Topics` to two comma-separated topic names (normally `orders,payments`) when running the consumer.
 
 The sample accepts command-line arguments and environment variables through .NET configuration:
 
 | Setting | Default | Purpose |
 | --- | --- | --- |
-| `Mode` | `publish` | `publish` sends one message. Any other value starts the consumer. |
+| `Mode` | `publish` | `publish` sends the order and payment messages. Any other value starts the consumer. |
 | `Kafka:BootstrapServers` | `127.0.0.1:9092` | Broker address. Use `Kafka__BootstrapServers` as an environment variable. |
-| `Kafka:Topic` | `orders` | Topic registered by the sample consumer. The sample publisher topic is fixed to `orders`. |
+| `Kafka:Topics` | `orders` | Comma-separated topics registered by the sample consumer: the first uses `OrderConsumerHandler`, the second uses `PaymentConsumerHandler`. Provide both topics for consumer mode, for example `orders,payments`. The publisher always sends to the fixed `orders` and `payments` topics. |
 | `Kafka:GroupId` | `EMC-orders-sample` | Consumer group. |
-| `RunSeconds` | No timeout | Sets a positive timeout in seconds for the sample publish operation. |
 
 Example using PowerShell environment variables:
 
 ```powershell
 $env:Kafka__BootstrapServers = 'localhost:9092'
-$env:Kafka__Topic = 'orders'
+$env:Kafka__Topics = 'orders,payments'
 $env:Kafka__GroupId = 'orders-worker'
 dotnet run --project samples/EMC.Queue.Kafka.Sample -- --Mode=consume
 ```
